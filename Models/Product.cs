@@ -21,5 +21,10 @@ namespace ECommerce.Models
         public DateTime LaunchDate { get; set; }
 
         public decimal Price { get; set; }
+
+        public int categoryId { get; set; }
+
+        public string ImagePath { get; set; }
+
     }
 }

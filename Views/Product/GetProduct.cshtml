@@ -1,0 +1,27 @@
+﻿@model IEnumerable<ECommerce.Models.ProductViewModel>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Products</h2>
+
+<div class="row">
+  
+    @foreach (var item in Model)
+    {
+        <div class="col-md-4">
+
+            <ul>
+                <ol><b>@item.Name</b></ol>
+                <ol>@item.Price</ol>
+                <img src="@(item.ImagePath !=null ? item.ImagePath.Substring(1) : "")" width="50" height="50" />
+            </ul>
+            <p><a class="btn btn-default" href="@Url.Action("ProductDetail","Product", new { productID = item.Id})">Product Detail</a></p>
+        </div>
+    }
+
+<div>
+    @Html.ActionLink("Back to Categoy", "Index","Home")
+</div>
+</div>

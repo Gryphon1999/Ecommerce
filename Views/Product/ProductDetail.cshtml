@@ -1,0 +1,84 @@
+﻿@model ECommerce.Models.ProductViewModel
+
+@{
+    ViewBag.Title = "ProductDetail";
+}
+
+<h2>Product Detail</h2>
+
+<div class="row">
+
+    <div class="alert alert-info" id="alert-success-message"  style="display:none">
+        <h5>Product has been added to Cart Successfully!</h5>
+    </div>
+
+    <div class="alert alert-info" id="alert-error-message" style="display:none">
+        <h5>Unable to add item to cart! Please re-confirm</h5>
+    </div>
+
+
+    <div class="col-md-4">
+
+        <ul>
+            <ol><b>@Model.Name</b></ol>
+            <ol>@Model.Price</ol>
+
+            <img src="@(Model.ImagePath !=null ? Model.ImagePath.Substring(1) : "")" width="50" height="50" />
+
+
+            <div>
+                <ol> <b>@Model.Description</b></ol>
+            </div>
+        </ul>
+
+        <ul>
+            <a href="javascript:void" class="item-add-to-cart" data-productID="@Model.Id">Add to Cart</a>
+        </ul>
+        @*<p><a class="btn btn-default" href="Url.Action("ProductDetail","Product", new { categoryID = item.Id})">Product Detail</a></p>*@
+    </div>
+
+
+
+</div>
+
+<div>
+        @Html.ActionLink("Back to Product", "GetProduct", "Product", new { categoryID = Model.CategoryId})
+    </div>
+
+
+<script src="~/Scripts/jquery-3.4.1.js"></script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        $(".item-add-to-cart").on('click', function () {
+
+            var productID = $(this).attr('data-productID');
+            console.log(productID);
+
+            $.ajax({
+                url: '/product/AddCart',
+                type: 'POST',
+                data: { "productID": productID },
+                success: function (result) {
+                    
+                    if (result === 'added') {
+                        $("#alert-success-message").show();
+                    }
+                    else if (result === 'error') {
+                        $("#alert-error-message").show();
+                    }
+
+                    setTimeout(function () {
+                        window.location.href = "/cart/index";
+                    }, 5000);
+                },
+                error: function (result) {
+
+                }
+            })
+
+        })
+    })
+
+</script>

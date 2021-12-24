@@ -4,6 +4,7 @@ using ECommerce.Services;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -14,12 +15,16 @@ namespace ECommerce.Controllers
     {
 
         private readonly ProductService productService;
+        private readonly CategoryService categoryService;
 
         public ProductController()
         {
             productService = new ProductService();
+            categoryService = new CategoryService();
         }
+        #region CRUD
 
+       
 
         // GET: Product
         public ActionResult Index()
@@ -38,7 +43,10 @@ namespace ECommerce.Controllers
         // GET: Product/Create
         public ActionResult Create()
         {
-            var model = new ProductViewModel();
+            var model = new ProductViewModel()
+            {
+                categories = categoryService.ListAllCategories(),
+            };
 
             return View(model);
         }
@@ -49,6 +57,10 @@ namespace ECommerce.Controllers
         {
             try
             {
+                var path = @"~/Category/" + productVM.ImgPath.FileName + Path.GetExtension(productVM.ImgPath.FileName);
+                productVM.ImagePath = path;
+                productVM.ImgPath.SaveAs(Server.MapPath(@"~/Category/" + productVM.ImgPath.FileName + Path.GetExtension(productVM.ImgPath.FileName)));
+
                 bool result = productService.AddProduct(productVM);
 
                 if (result)
@@ -77,7 +89,7 @@ namespace ECommerce.Controllers
         [HttpPost]
         public ActionResult Edit(int id, ProductViewModel productVM)
         {
-            var data = productService.EditProduct(id, productVM);
+            bool data = productService.EditProduct(id, productVM);
             return RedirectToAction("Index");
         }
 
@@ -87,7 +99,7 @@ namespace ECommerce.Controllers
         {
             try
             {
-                var data = productService.DeleteProduct(id);
+                bool data = productService.DeleteProduct(id);
                 return RedirectToAction("Index");
             }
             catch
@@ -95,5 +107,40 @@ namespace ECommerce.Controllers
                 return View();
             }
         }
+        #endregion
+
+
+        #region Category
+        public ActionResult GetProduct(int categoryID)
+        {
+            var data = productService.ListAllProductForCategory(categoryID);
+
+            return View(data);
+        }
+        #endregion
+
+        #region ProductDetail
+        public ActionResult ProductDetail(int productID)
+        {
+            var data = productService.GetProductByID(productID);
+
+            return View(data);
+        }
+        #endregion
+
+        #region AddCart
+        public ActionResult AddCart(string productID)
+        {
+            bool result = productService.AddProductToCart(productID);
+
+            if(result)
+            {
+                return Json("added");
+            }
+
+
+            return Json("error");
+        }
+        #endregion
     }
 }

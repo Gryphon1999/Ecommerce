@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ECommerce.Services;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -8,9 +9,22 @@ namespace ECommerce.Controllers
 {
     public class HomeController : Controller
     {
+
+        private readonly CategoryService CategoryService;
+        public HomeController()
+        {
+            CategoryService = new CategoryService();
+        }
+
         public ActionResult Index()
         {
-            return View();
+            var data = CategoryService.GetAllCategories();
+            return View(data);
+        }
+
+        public ActionResult Banner()
+        {
+            return PartialView("_Banner");
         }
 
         public ActionResult About()

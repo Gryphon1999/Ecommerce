@@ -1,0 +1,31 @@
+﻿@model IEnumerable<ECommerce.Models.CartViewModel>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Items in Cart</h2>
+
+
+<table class="table table-hover table-condensed">
+    <tr>
+        <th></th>
+        <th>Product</th>
+        <th>Price</th>
+        <th>Quantity</th>
+        <th>Total</th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td><img src="@(item.ImagePath !=null ? item.ImagePath.Substring(1) : "")" width="50" height="50"/></td>
+            <td>@item.Name [@item.CategoryName]</td>
+            <td>@item.Price</td>
+            <td>@item.Quantity</td>
+            <td>@(item.Price * item.Quantity)</td>
+        </tr>
+
+    }
+</table>
+
